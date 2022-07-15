@@ -1,0 +1,12 @@
+file:/home/ubuntu/.gitconfig	user.name=VoltChange
+file:/home/ubuntu/.gitconfig	user.email=prpr23333@163.com
+file:.git/config	core.repositoryformatversion=0
+file:.git/config	core.filemode=true
+file:.git/config	core.bare=false
+file:.git/config	core.logallrefupdates=true
+file:.git/config	remote.origin.url=git://g.csail.mit.edu/xv6-labs-2020
+file:.git/config	remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+file:.git/config	branch.master.remote=origin
+file:.git/config	branch.master.merge=refs/heads/master
+file:.git/config	branch.util.remote=origin
+file:.git/config	branch.util.merge=refs/heads/util

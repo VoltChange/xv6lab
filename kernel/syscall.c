@@ -139,6 +139,10 @@ syscall(void)
 
   num = p->trapframe->a7;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
+    //从a7读取系统调用的编号，将1<<num与进程的trace_mask比较，相等则打印
+    if((1 << num) & p->trace_mask) {
+      printf("%d: syscall %s -> %d\n", p->pid, syscall_names[num], p->trapframe->a0);
+    }
     p->trapframe->a0 = syscalls[num]();
   } else {
     printf("%d %s: unknown sys call %d\n",

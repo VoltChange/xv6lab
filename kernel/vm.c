@@ -440,3 +440,27 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
     return -1;
   }
 }
+
+void recursive_vmprint(pagetable_t pagetable, int level) {
+  
+  if(level>3)//递归终止条件
+    return;
+  for (int i = 0; i < 512; ++i) {
+    pte_t pte = pagetable[i];
+    if ((pte & PTE_V)) { //pte有效情况
+      //根据层级打印".."
+      for (int j = 0; j < level; ++j) {
+        if (j == 0) printf("..");
+        else printf(" ..");
+      }
+      uint64 child = PTE2PA(pte); // 通过pte映射下一级页表的物理地址
+      printf("%d: pte %p pa %p\n", i, pte, child);//打印页表信息
+      recursive_vmprint((pagetable_t)child, level + 1);
+    }
+  }
+}
+
+void vmprint(pagetable_t pagetable) {
+  printf("page table %p\n", pagetable);
+  recursive_vmprint(pagetable, 1);
+}

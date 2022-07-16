@@ -99,9 +99,11 @@ sys_uptime(void)
 uint64
 sys_trace(void)
 {
+   // 取 a0 寄存器中的值返回给 mask
   int mask;
   if(argint(0, &mask) < 0)
     return -1;
+  // 把 mask 传给现有进程的 mask
   struct proc *p =myproc();
   p->trace_mask=mask;
   return 0;

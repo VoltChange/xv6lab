@@ -281,7 +281,7 @@ fork(void)
   *(np->trapframe) = *(p->trapframe);
 
   // Cause fork to return 0 in the child.
-  np->trapframe->a0 = 0;
+  //np->trapframe->a0 = 0;
 
   // 子进程复制父进程的trace_mask
   np->trace_mask=p->trace_mask;

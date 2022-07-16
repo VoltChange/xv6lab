@@ -6,7 +6,10 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "sysinfo.h"
 
+uint64 getfreemem();
+uint64 getnproc();
 uint64
 sys_exit(void)
 {
@@ -106,5 +109,22 @@ sys_trace(void)
   // 把 mask 传给现有进程的 mask
   struct proc *p =myproc();
   p->trace_mask=mask;
+  return 0;
+}
+uint64
+sys_sysinfo(void)
+{
+  struct sysinfo info;
+  info.freemem =getfreemem();
+  info.nproc=getnproc();
+  uint64 addr;
+  struct proc* p =myproc();
+  //用argaddr读进来我们要保存的在用户态的数据sysinfo的指针地址
+  if(argaddr(0, &addr) < 0)
+    return -1;
+  //把info的数据拷贝到指针指向的数据里
+  if(copyout(p->pagetable, addr, (char *)&info, sizeof(info)) < 0)
+    return -1;
+  printf("abcdefg111");
   return 0;
 }

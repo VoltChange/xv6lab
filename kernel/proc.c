@@ -707,5 +707,5 @@ uint64 getnproc()
     }
     release(&p->lock);
   }
-  return 0;
+  return count;
 }

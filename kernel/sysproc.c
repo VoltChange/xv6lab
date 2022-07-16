@@ -125,6 +125,5 @@ sys_sysinfo(void)
   //把info的数据拷贝到指针指向的数据里
   if(copyout(p->pagetable, addr, (char *)&info, sizeof(info)) < 0)
     return -1;
-  printf("abcdefg111");
   return 0;
 }

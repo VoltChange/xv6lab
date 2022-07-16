@@ -702,7 +702,7 @@ uint64 getnproc()
   int count=0;
   for(p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
-    if(p->state == UNUSED) {
+    if(p->state != UNUSED) {
       count++;
     }
     release(&p->lock);

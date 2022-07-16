@@ -95,3 +95,10 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+//在kernel/sysproc.c中添加一个sys_trace()函数
+uint64
+sys_trace(void)
+{
+  printf("xiba");
+  return 0;
+}

@@ -122,6 +122,7 @@ panic(char *s)
   printf(s);
   printf("\n");
   panicked = 1; // freeze uart output from other CPUs
+  backtrace();
   for(;;)
     ;
 }
@@ -131,4 +132,20 @@ printfinit(void)
 {
   initlock(&pr.lock, "pr");
   pr.locking = 1;
+}
+
+void backtrace()
+{
+  printf("backtrace\n");
+  uint64 fp=r_fp();//读出寄存器的值
+  uint64* frame= (uint64 *) fp;
+  
+  uint64 up =PGROUNDUP(fp);//栈页顶地址
+  uint64 down =PGROUNDDOWN(fp);//栈页底地址
+  while(fp<up && fp>down)
+  {
+    printf("%p\n",frame[-1]); //向下偏移8个字节，函数返回地址
+    fp =frame[-2];//向下偏移16个字节，上一个栈帧的栈帧指针
+    frame =(uint64* )fp;
+  }
 }

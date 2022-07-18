@@ -698,10 +698,10 @@ procdump(void)
 int is_lazy_alloc_va(uint64 va)
 {
   struct proc *p=myproc();
-  if(va >=p->sz)//va>=p->sz则为不合法地址
-  {
+  if(va >=p->sz||PGROUNDUP(p->trapframe->sp) - 1 >= va){//不位于栈空间上，sp是stack pointer，用于指向栈顶（低地址）
     return 0;
   }
+
   return 1;
 }
 

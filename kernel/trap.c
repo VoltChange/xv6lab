@@ -78,6 +78,8 @@ usertrap(void)
             printf("lazy alloc error\n");
             p->killed=1;
           } 
+      }else{
+        p->killed=1;
       }
   } else {
     printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);

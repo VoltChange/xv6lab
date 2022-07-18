@@ -694,3 +694,34 @@ procdump(void)
     printf("\n");
   }
 }
+
+int is_lazy_alloc_va(uint64 va)
+{
+  struct proc *p=myproc();
+  if(va >=p->sz)//va>=p->sz则为不合法地址
+  {
+    return 0;
+  }
+  return 1;
+}
+
+int lazy_alloc(uint64 va)
+{
+  va= PGROUNDDOWN(va);//出错的虚拟地址向下舍入到页面边界
+  char* mem;//物理地址
+  mem = kalloc();//进行分配
+  if(mem == 0){//分配不成功
+    //uvmdealloc(pagetable, a, oldsz);
+    return -1;
+  }
+  //分配成功
+  memset(mem, 0, PGSIZE);//先把页全置为0
+  struct proc* p=myproc();
+  if(mappages(p->pagetable, va, PGSIZE, (uint64)mem, PTE_W|PTE_X|PTE_R|PTE_U) != 0){//尝试对页表进行映射
+    //失败
+    kfree(mem);
+    //uvmdealloc(pagetable, a, oldsz);
+    return -1;
+  }
+  return 0;
+}

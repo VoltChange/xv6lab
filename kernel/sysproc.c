@@ -100,11 +100,24 @@ sys_uptime(void)
 uint64
 sys_sigalarm(void)
 {
+  int ticks;//接收第0个参数
+  uint64 handler;//接收第1个参数
+
+  argint(0,&ticks);
+  argaddr(1,&handler);
+
+  struct proc* p= myproc();//获得当前进程
+  p->ticks=ticks;
+  p->ticks_cnt=0;
+  p->handler=handler;
+
   return 0;
 }
 
 uint64
 sys_sigreturn(void)
 {
+  memmove(myproc()->trapframe, myproc()->alarm_trapframe, sizeof(struct trapframe));
+  myproc()->is_alarming = 0;
   return 0;
 }

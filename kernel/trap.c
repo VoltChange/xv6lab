@@ -78,7 +78,25 @@ usertrap(void)
 
   // give up the CPU if this is a timer interrupt.
   if(which_dev == 2)
+  {
+    // todo
+    if(p->ticks>0)//ticks>0
+    {
+      p->ticks_cnt++;
+      if(p->ticks_cnt>p->ticks&& p->is_alarming == 0)//计数到了且没有在执行alarm
+      {
+        //保存寄存器
+        memmove(p->alarm_trapframe, p->trapframe, sizeof(struct trapframe));
+        // 更改陷阱帧中的epc
+        p->trapframe->epc = (uint64)p->handler;
+        p->is_alarming=1;
+        p->ticks_cnt=0;
+        p->trapframe->epc=p->handler;
+      }
+    }
     yield();
+  }
+
 
   usertrapret();
 }

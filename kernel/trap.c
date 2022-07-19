@@ -67,20 +67,10 @@ usertrap(void)
     syscall();
   } else if((which_dev = devintr()) != 0){
     // ok
-  } else if(r_scause()==13 || r_scause()==15){
-      //处理页面错误
-      uint64 va=r_stval();//产生页面错误的虚拟地址
-      if(is_lazy_alloc_va(va))//如果是懒分配导致的错误
-      {
-          if(lazy_alloc(va)<0)//分配页面
-          {
-            //小于0说明发生错误，kill进程
-            printf("lazy alloc error\n");
-            p->killed=1;
-          } 
-      }else{
-        p->killed=1;
-      }
+  } else if((r_scause() == 13 || r_scause() == 15) && uvmcheckcowpage(r_stval())) { // copy-on-write
+    if(uvmcowcopy(r_stval()) == -1){
+      p->killed = 1;
+    }
   } else {
     printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);
     printf("            sepc=%p stval=%p\n", r_sepc(), r_stval());
